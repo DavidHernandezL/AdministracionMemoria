@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,9 +7,10 @@ public class Memory {
         Scanner entry = new Scanner(System.in);
         int option,sizeProcedure;
         String nameProcedure;
-        Procedure p;
+        Process p;
         MemoryManager manager = new MemoryManager();
-        int mapBit[] = manager.getBitMap();
+        int[] mapBit = manager.getBitMap();
+
         do {
             System.out.println("1.Enter procedure");
             System.out.println("2.Delete Procedure");
@@ -30,7 +30,7 @@ public class Memory {
                         System.out.print("Enter size of procedure (Bytes): ");
                         sizeProcedure = entry.nextInt();
 
-                        p = new Procedure(nameProcedure, sizeProcedure);
+                        p = new Process(nameProcedure, sizeProcedure);
 
                         if(manager.addProcess(p) < 0)
                         {
@@ -39,7 +39,7 @@ public class Memory {
                         }
 
 
-                        List<Procedure> lista = manager.getProcess();
+                        List<Process> lista = manager.getProcess();
                         System.out.println(manager.bitMapToString());
 
                         System.out.println("Process names in memory");

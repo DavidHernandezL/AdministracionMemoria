@@ -5,45 +5,60 @@ import java.util.List;
 public class MemoryManager {
 
     private final int[] bitMap = new int[32];
-    private final List<Procedure> process = new ArrayList<>();
+    private final List<Process> process = new ArrayList<>();
 
     //Constructor
     public MemoryManager()
     {
-        Arrays.fill(bitMap,0); //Initialize el bitMap with zeros
+        Arrays.fill(bitMap,0); //Inicializa el mapeo de bits con 0
     }
 
-    public List<Procedure> getProcess() {
+    public List<Process> getProcess() {
         return process;
     }
 
-    public int addProcess(Procedure p1)
+    public int[] getBitMap()
+    {
+        return bitMap;
+    }
+
+    /**
+     *  Añade un nuevo proceso a la memoria
+     * @param p1 Proceso a añadir a la memoria
+     * @return 1 si tuvo exito ó -1 si no lo tuvo
+     */
+    public int addProcess(Process p1)
     {
         int numBlocks;
         int numBinary;
-        int result[];
+        int[] result;
         int startProcess;
         int bitAux;
 
-        numBlocks = (int)(Math.ceil(p1.getSize() / 1024)); //Calculate the number of blocks that the process needs
-
+        numBlocks = (int)(Math.ceil(p1.getSize() / 1024)); /* Calcula el numero de bloques que necesita */
         numBinary = generateNumBinary(numBlocks);
-
         result = searchPlace(numBinary,numBlocks);
+
         if(result[0] < 0) return -1;
 
         startProcess = result[0];
         bitAux = result[1];
-        this.bitMap[bitAux] = this.bitMap[bitAux] | (numBinary << startProcess);
-        p1.setStart(result);
+
+        this.bitMap[bitAux] = this.bitMap[bitAux] | (numBinary << startProcess); //Asigna los bits necesarios en el mapa de bits
+        p1.setStart(result); //Guarda en que entero se encuentra y en cual bit inicia
         this.process.add(p1);
         return 1;
     }
 
+    /**
+     * Remueve un proceso de la memoria
+     * @param name Nombre del proceso que se quiere eliminar
+     * @return Un entero, 1 si fue exitosa la operacion, -1 si no lo fue
+     */
     public int removeProcess(String name){
         int pos = -1;
-        int result[] = new int[2];
-        Procedure processLocal = new Procedure(name);
+        int[] result = new int[2];
+        Process processLocal = new Process(name);
 
         for (int i = 0; i < process.size(); i++)
         {
@@ -61,11 +76,12 @@ public class MemoryManager {
         return pos;
     }
 
-    public int[] getBitMap()
-    {
-        return bitMap;
-    }
-
+    /**
+     * Busca si existe espacio en la memoria paa un proceso
+     * @param binary Numero que representa el binario de los bloques a guardar
+     * @param numBlocks Numero de bloques que se van a guardar
+     * @return Un arreglo de enteros donde esta guardado la posision inicial del proceso y en que entero del mapa de bits
+     */
     private int[] searchPlace(int binary, int numBlocks)
     {
         int j = 0;
@@ -81,8 +97,8 @@ public class MemoryManager {
                 System.out.println(this.bitMap[i] & (binaryAux << j));
                 if((this.bitMap[i] & (binaryAux << j)) == 0)
                 {
-                    result[0] = j; //Save the position start in the bit
-                    result[1] = i; //Save the number of int
+                    result[0] = j; //Guarda la posision inical
+                    result[1] = i; //Guarda el numero de entero
                     return result;
                 }
                 j++;
@@ -93,6 +109,12 @@ public class MemoryManager {
         return result;
     }
 
+    /**
+     * Genera el numero en binario que representa el numero de bloques que se va a almacenar.
+     * Ejemplo: Si se necesitan 3 bloques genera un numero binario --> 111
+     * @param numBlocks Numero de bloques que se van a guardar
+     * @return Un entero que representa el binario generado
+     */
     private int generateNumBinary(int numBlocks) //Generates the binary number of blocks needed by the process
     {
         StringBuilder binary = new StringBuilder();
@@ -104,6 +126,10 @@ public class MemoryManager {
 
     }
 
+    /**
+     * Convierte el mapa de bits en una cadena
+     * @return Una cadena que representa el mapa de bits
+     */
     public String bitMapToString() {
         String formatString = "";
         int i = 1;

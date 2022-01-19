@@ -1,25 +1,26 @@
 
-public class Procedure
+public class Process
 {
     //Attributes
     private double size;
-    private String name;
-    private int start[] = new int[2]; //Bit where start the procedure
+    private final String name;
+    private int[] start = new int[2];
 
-    public int[] getStart() {
-        return start;
-    }
-
-    //Constructor
-    public Procedure(String name, int size)
+    //Constructors
+    public Process(String name, int size)
     {
         this.name = name;
         this.size = size;
     }
 
-    public Procedure(String name)
+    public Process(String name)
     {
         this.name = name;
+    }
+
+    //Getters
+    public int[] getStart() {
+        return start;
     }
 
     public String getName()
